@@ -5,6 +5,6 @@
 
 ## Main Information
 
-| Article Name | Source | Subject | Model | Metric | Dataset |
-| ------------ | ------ | ------- | ----- | ------ | ------- |
-|              |        |         |       |        |         |
+| Article Name | Journal | Citations | Date | Source | Subject | Model | Metric | Dataset |
+| ------------ | -------- | --------- | ---- | ------ | ------- | ----- | ------ | ------- |
+|              |          |           |      |        |         |       |        |         |

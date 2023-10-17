@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "research/fleeting/GANs.md",
+                "file": "@templates/Literature/Literature_Paper.md",
                 "mode": "source",
                 "source": false
               }
@@ -25,14 +25,13 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Deliverables.md",
+                "file": "presentations/2023-10-18.md",
                 "mode": "source",
                 "source": false
               }
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -98,7 +97,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Deliverables.md",
+                "file": "@templates/Literature/Literature_Paper.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +114,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Deliverables.md",
+                "file": "@templates/Literature/Literature_Paper.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +137,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Deliverables.md"
+                "file": "@templates/Literature/Literature_Paper.md"
               }
             }
           }
@@ -160,15 +159,19 @@
       "table-editor-obsidian:Advanced Tables Toolbar": false
     }
   },
-  "active": "c1a98fdedcbafe68",
+  "active": "fd75b22649b7790d",
   "lastOpenFiles": [
-    "Rules and Constraints.md",
-    "Deliverables.md",
-    "research/fleeting/GANs.md",
-    "@templates/Fleeting/Fleeting_Note.md",
-    "research/fleeting",
     "@templates/Literature/Literature_Article.md",
     "@templates/Literature/Literature_Paper.md",
+    "research/fleeting/GANs.md",
+    "presentations/2023-10-18.md",
+    "presentations",
+    "images",
+    "images/GAN_architecture.png",
+    "Deliverables.md",
+    "Rules and Constraints.md",
+    "@templates/Fleeting/Fleeting_Note.md",
+    "research/fleeting",
     "@templates/Fleeting",
     "research/reference",
     "research/permanent",
@@ -176,8 +179,6 @@
     "research",
     "@templates/Permanent/Permanent_Idea.md",
     "@templates/Reference",
-    "@templates/Permanent",
-    "@templates/Literature",
-    "@templates"
+    "@templates/Permanent"
   ]
 }
