@@ -5,9 +5,9 @@
 
 ## Main Information
 
-| Paper Name | Journal | Citations | Date | Model | Metric | Dataset | Citations |
-| ---------- | ------- | --------- | ---- | ----- | ------ | ------- | --------- |
-|            |         |           |      |       |        |         |           |
+| Paper Name | Journal | Citations | Date | Model | Metric | Dataset |
+| ---------- | ------- | --------- | ---- | ----- | ------ | ------- |
+|            |         |           |      |       |        |         |
 
 
 ## Method
