@@ -53,7 +53,7 @@ def create_decoder_block(layer_in, skip_in, n_filters, dropout=True):
 # define the standalone generator model
 def create_generator(
     image_shape: Tuple[int, int, int] | Tuple[int, int] = (256, 256, 3)
-):
+) -> "Model":
     """
     Encoder: C64-C128-C256-C512-C512-C512-C512-C512
     Decoder: CD512-CD1024-CD1024-C1024-C1024-C512-C256-C128
