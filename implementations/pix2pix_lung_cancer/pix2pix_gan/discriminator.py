@@ -8,7 +8,6 @@ from keras.layers import (
     LeakyReLU,
     Activation,
     Concatenate,
-    Dropout,
     BatchNormalization,
 )
 
