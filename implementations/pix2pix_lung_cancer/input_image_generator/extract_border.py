@@ -6,7 +6,7 @@ import numpy as np
 import cv2 as cv
 
 
-def extract_border(
+def extract_canny_border(
     image: np.ndarray,
     canny_low: float = 128,
     threshold: float = 100,
