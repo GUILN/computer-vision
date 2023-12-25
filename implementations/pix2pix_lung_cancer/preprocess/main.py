@@ -28,9 +28,6 @@ def process_file(file_path: str, patches_dir: str, annotations_df: pd.DataFrame,
         fig_name = os.path.join(patches_dir, file_name + "_" + str(i) + '.png')
         logging.info("saving patch: %s", fig_name)
         plt.imsave(fig_name, resized_2) 
-        
-    logging.info("resizing patches for file: %s", file_path)
-    logging.info("saving patches for file: %s", file_path)
     
 
 def preprocess_pipeline(data_dir: str, patches_dir: str, annotations_df: pd.DataFrame, candidates_df: pd.DataFrame):
