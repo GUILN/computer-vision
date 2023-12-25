@@ -9,8 +9,8 @@
 
 ## Productionalize
 
-- [ ] Create Cropping Pipeline
-  - [ ] Try to save with black and white (double check the paper)
+- [X] Create Cropping Pipeline
+  - [X] Try to save with black and white (double check the paper)
 - [ ] Create Input Image Generation Pipeline
   - [ ] Should be easy to relate the input image to the real image
 - [ ] Create the model - Productionalized
