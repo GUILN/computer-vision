@@ -6,7 +6,7 @@ import cv2
 import pandas as pd
 from tqdm import tqdm
 import numpy as np
-import pyplot as plt
+import matplotlib.pyplot as plt
 
 from extract_roi_to_2d_patch import extract_candidates
 from resize_2d_patch_image import resize
@@ -19,9 +19,9 @@ def process_file(file_path: str, patches_dir: str, annotations_df: pd.DataFrame,
     logging.info("filtering positive nodules...")
     num_positives = np.where(values_array == 1)[0]
     logging.info("total positive nodules: %d", len(num_positives))
-    for i in num_positives:
-        logging.info("processing positive nodule: %d", i)
-        resized = resize(patches_array[i], factor=10)
+    for i, candidate_num in enumerate(num_positives):
+        logging.info("processing positive nodule: %d", candidate_num)
+        resized = resize(patches_array[candidate_num], factor=10)
         logging.info("resizing patch...")
         resized_2 = cv2.resize(resized, (128, 128))
         file_name = os.path.splitext(os.path.basename(file_path))[0]
