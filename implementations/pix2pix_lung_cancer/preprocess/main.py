@@ -2,7 +2,6 @@
 import os
 import argparse
 import logging
-import cv2
 import pandas as pd
 from tqdm import tqdm
 import numpy as np
@@ -30,7 +29,8 @@ def process_file(
         logging.info("processing positive nodule: %d", candidate_num)
         resized = resize(patches_array[candidate_num], factor=10)
         logging.info("resizing patch...")
-        resized_2 = cv2.resize(resized, (128, 128))
+        # does not resize again, maintains the 400x400 size
+        resized_2 = resized  # cv2.resize(resized, (128, 128))
         file_name = os.path.splitext(os.path.basename(file_path))[0]
         fig_name = os.path.join(patches_dir, file_name + "_" + str(i) + ".png")
         logging.info("saving patch: %s", fig_name)
