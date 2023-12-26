@@ -7,10 +7,17 @@ import numpy as np
 
 from input_image_generator.generator import InputImageGenerator
 
-TestImageTuple = namedtuple("TestData", ["input_image", "image"])
+TestImageTuple = namedtuple("TestImageTuple", ["input_image", "image"])
 
 
 class TestDataPipeline:
+    """
+    Test data pipeline - generates test data (input and real images) for pix2pix model.
+    1. Creates more images by rotating the image by a certain degree.
+    2. Generates input images for pix2pix model.
+    3. Resizes the images to a certain size.
+    """
+
     def __init__(
         self,
         resize: Tuple[int, int] = (128, 128),
