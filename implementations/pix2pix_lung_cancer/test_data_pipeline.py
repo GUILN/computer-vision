@@ -60,7 +60,7 @@ class TestDataPipeline:
         :return: the list of all rotated images
         """
         images = [image]
-        rows, cols = image.shape
+        rows, cols, _ = image.shape
         if self._rotation_augmentation_degree:
             for i in range(0, 360, self._rotation_augmentation_degree):
                 M = cv.getRotationMatrix2D((cols / 2, rows / 2), i, 1)
