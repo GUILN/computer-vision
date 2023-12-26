@@ -40,7 +40,9 @@ def parse_args() -> Namespace:
 
 
 def get_test_data(data_dir: str, rotate_images: int):
-    test_data_pipeline = TestDataPipeline(rotation_augmentation_degree=rotate_images)
+    test_data_pipeline = TestDataPipeline(
+        rotation_augmentation_degree=rotate_images, resize=(248, 248)
+    )
     # get only the first image from the data directory
     image_name = os.listdir(data_dir)[0]
     image_path = os.path.join(data_dir, image_name)

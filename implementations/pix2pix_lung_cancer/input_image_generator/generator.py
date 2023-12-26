@@ -1,6 +1,5 @@
 from collections import namedtuple
 import numpy as np
-import cv2 as cv
 import logging
 from typing import Tuple
 from input_image_generator.extract_border import extract_canny_border
@@ -21,7 +20,6 @@ class InputImageGenerator:
 
     def __init__(
         self,
-        resize: Tuple[int, int] = (128, 128),
         segmentation_threshold: float = 100,
         border_extraction_params: BorderExtractionParams = BorderExtractionParams(
             128, 100
@@ -34,7 +32,6 @@ class InputImageGenerator:
         logging.debug("Initializing InputImageGenerator...")
         self._segmentation_threshold = segmentation_threshold
         self._border_extraction_params = border_extraction_params
-        self._resize = resize
 
     def generate_input_image(self, image: np.ndarray) -> np.ndarray:
         """
@@ -47,7 +44,5 @@ class InputImageGenerator:
         segmented_image = segment_with_threshold(image)
         logging.debug("Extracting border from the image...")
         border = extract_canny_border(segmented_image)
-        logging.debug("Resizing the image...")
-        border = cv.resize(border, self._resize)
         logging.debug("Done generating input images.")
         return border
