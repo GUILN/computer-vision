@@ -2,11 +2,12 @@
 import logging
 import argparse
 from argparse import Namespace
+from typing import Generator
 import os
 
 import cv2
 
-from test_data_pipeline import TestDataPipeline
+from test_data_pipeline import TestDataPipeline, TestImageTuple
 
 TEST_SAVED_INPUT_DATA = "./data/test_saved_input_data"
 
@@ -44,13 +45,22 @@ def get_test_data(data_dir: str, rotate_images: int):
         rotation_augmentation_degree=rotate_images, resize=(248, 248)
     )
     # get only the first image from the data directory
-    image_name = os.listdir(data_dir)[0]
-    image_path = os.path.join(data_dir, image_name)
+    for file in os.listdir(data_dir):
+        if file.endswith(".png"):
+            image_name = file
+            image_path = os.path.join(data_dir, image_name)
+            image = cv2.imread(image_path)
+            for test_image in test_data_pipeline.generate_test_image(image):
+                yield test_image
     # read image
-    image = cv2.imread(image_path)
-    test_data = test_data_pipeline.generate_test_image(image)
-    for i, test_image in enumerate(test_data):
-        # save image with cmap gray_r
+
+
+def main():
+    logging.info("Parsing args...")
+    args = parse_args()
+    logging.info("Processing with arguments: %s", str(args))
+    logging.info("Getting test data...")
+    for i, test_image in enumerate(get_test_data(args.data_dir, args.rotate_images)):
         cv2.imwrite(
             os.path.join(TEST_SAVED_INPUT_DATA, f"input_{i}.png"),
             cv2.bitwise_not(test_image.input_image),
@@ -59,14 +69,6 @@ def get_test_data(data_dir: str, rotate_images: int):
         cv2.imwrite(
             os.path.join(TEST_SAVED_INPUT_DATA, f"real_image_{i}.png"), test_image.image
         )
-
-
-def main():
-    logging.info("Parsing args...")
-    args = parse_args()
-    logging.info("Processing with arguments: %s", str(args))
-    logging.info("Getting test data...")
-    get_test_data(args.data_dir, args.rotate_images)
 
 
 if __name__ == "__main__":
