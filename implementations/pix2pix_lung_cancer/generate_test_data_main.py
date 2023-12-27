@@ -2,7 +2,7 @@
 import logging
 import argparse
 from argparse import Namespace
-from typing import Generator, Tuple
+from typing import Callable, Generator, Tuple
 import os
 
 import cv2
@@ -38,7 +38,9 @@ def parse_args() -> Namespace:
 
 
 def get_test_data(
-    patches_dir: str, rotate_images: int
+    patches_dir: str,
+    rotate_images: int,
+    extra_processing: Callable[[TestImageTuple], TestImageTuple] = None,
 ) -> Generator[Tuple[TestImageTuple, str], None, None]:
     """
     Returns a generator of test data.
@@ -64,6 +66,9 @@ def get_test_data(
             for img_i, test_image in enumerate(
                 test_data_pipeline.generate_test_image(image)
             ):
+                if extra_processing is not None:
+                    logging.debug("Applying extra processing...")
+                    test_image = extra_processing(test_image)
                 image_complete_name = f"{image_name}_{img_i}"
                 yield test_image, image_complete_name
 
