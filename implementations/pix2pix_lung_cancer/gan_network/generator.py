@@ -1,6 +1,5 @@
 from typing import Any, Tuple
 import tensorflow as tf
-from tensorflow.keras import Model
 from collections import namedtuple
 
 
@@ -52,7 +51,7 @@ def upsample(filters: Any, size: Any, apply_dropout=False) -> Any:
 # defining the generator network
 
 
-def Generator(input_size: Tuple[int, int] = (256, 256)) -> Model:
+def Generator(input_size: Tuple[int, int] = (256, 256)) -> tf.keras.Model:
     width, height = input_size
     inputs = tf.keras.layers.Input(shape=[width, height, 3])
 
