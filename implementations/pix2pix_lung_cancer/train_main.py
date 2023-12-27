@@ -2,7 +2,7 @@
 import logging
 import argparse
 from argparse import Namespace
-from pix2pix_data_pipeline import get_train_dataset
+from gan_network.pix2pix_data_pipeline import get_train_dataset
 
 
 def parse_args() -> Namespace:

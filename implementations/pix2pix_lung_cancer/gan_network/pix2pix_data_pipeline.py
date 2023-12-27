@@ -69,7 +69,9 @@ def random_jittering(
 
 def load_image(real_image_file) -> TestImageTuple:
     input_image_file_name = str(real_image_file).replace("real", "input")
-    logging.debug("Image names - input: %s, real: %s", input_image_file_name, str(real_image_file))
+    logging.debug(
+        "Image names - input: %s, real: %s", input_image_file_name, str(real_image_file)
+    )
     # load and decode the image
     input_image = tf.io.read_file(input_image_file_name)
     input_image = tf.image.decode_png(input_image)
