@@ -71,17 +71,17 @@ def load_image(image_file) -> TestImageTuple:
     logging.debug("Loading images...")
     image = tf.io.read_file(image_file)
     image = tf.image.decode_png(image)
-    
+
     logging.debug("Splitting input and real images...")
     w = tf.shape(image)[1]
     w = w // 2
     input_image = image[:, :w, :]
     real_image = image[:, w:, :]
-    
+
     logging.debug("Converting to float32...")
     input_image = tf.cast(input_image, tf.float32)
-    real_image = tf.cast(real_image, tf.float32) 
-    
+    real_image = tf.cast(real_image, tf.float32)
+
     return TestImageTuple(input_image=input_image, image=real_image)
 
 
@@ -112,7 +112,9 @@ def load_test_image(
 def get_train_dataset(input_data_dir: str, buffer_size: int = 400, batch_size: int = 1):
     logging.info("Getting train dataset...")
     train_dataset = tf.data.Dataset.list_files(input_data_dir + "/*.png")
-    train_dataset = train_dataset.map(load_train_image, num_parallel_calls=tf.data.AUTOTUNE)
+    train_dataset = train_dataset.map(
+        load_train_image, num_parallel_calls=tf.data.AUTOTUNE
+    )
     train_dataset = train_dataset.shuffle(buffer_size)
     train_dataset = train_dataset.batch(batch_size)
     return train_dataset
@@ -121,6 +123,8 @@ def get_train_dataset(input_data_dir: str, buffer_size: int = 400, batch_size: i
 def get_test_dataset(input_data_dir: str, batch_size: int = 1):
     logging.info("Getting test dataset...")
     test_dataset = tf.data.Dataset.list_files(input_data_dir + "/*.png")
-    test_dataset = test_dataset.map(load_test_image, num_parallel_calls=tf.data.AUTOTUNE)
+    test_dataset = test_dataset.map(
+        load_test_image, num_parallel_calls=tf.data.AUTOTUNE
+    )
     test_dataset = test_dataset.batch(batch_size)
     return test_dataset

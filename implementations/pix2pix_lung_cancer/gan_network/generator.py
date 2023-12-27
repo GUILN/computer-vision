@@ -1,9 +1,13 @@
 from typing import Any, Tuple
 import tensorflow as tf
 from tensorflow.keras import Model
+from collections import namedtuple
 
 
 OUTPUT_CHANNELS = 3
+LAMBDA = 100
+
+GeneratorLoss = namedtuple("GeneratorLoss", ["total_loss", "gan_loss", "l1_loss"])
 
 
 def downsample(filters: Any, size: Any, apply_batchnorm=True) -> Any:
@@ -101,3 +105,16 @@ def Generator(input_size: Tuple[int, int] = (256, 256)) -> Model:
     x = last(x)
 
     return tf.keras.Model(inputs=inputs, outputs=x)
+
+
+def generator_loss(
+    disc_generated_output: Any, gen_output: Any, target: Any
+) -> GeneratorLoss:
+    loss_object = tf.keras.losses.BinaryCrossentropy(from_logits=True)
+
+    gan_loss = loss_object(tf.ones_like(disc_generated_output), disc_generated_output)
+    # mean absolute error
+    l1_loss = tf.reduce_mean(tf.abs(target - gen_output))
+    total_gen_loss = gan_loss + (LAMBDA * l1_loss)
+
+    return GeneratorLoss(total_loss=total_gen_loss, gan_loss=gan_loss, l1_loss=l1_loss)
