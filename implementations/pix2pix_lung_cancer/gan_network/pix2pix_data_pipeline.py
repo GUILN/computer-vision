@@ -67,17 +67,18 @@ def random_jittering(
     return test_image_tuple
 
 
-def load_image(real_image_file) -> TestImageTuple:
-    input_image_file_name = str(real_image_file).replace("real", "input")
-    logging.debug(
-        "Image names - input: %s, real: %s", input_image_file_name, str(real_image_file)
-    )
-    # load and decode the image
-    input_image = tf.io.read_file(input_image_file_name)
-    input_image = tf.image.decode_png(input_image)
-    real_image = tf.io.read_file(real_image_file)
-    real_image = tf.image.decode_png(real_image)
-    # convert to float32
+def load_image(image_file) -> TestImageTuple:
+    logging.debug("Loading images...")
+    image = tf.io.read_file(image_file)
+    image = tf.image.decode_png(image)
+
+    logging.debug("Splitting input and real images...")
+    w = tf.shape(image)[1]
+    w = w // 2
+    real_image = image[:, :w, :]
+    input_image = image[:, w:, :]
+
+    logging.debug("Converting to float32...")
     input_image = tf.cast(input_image, tf.float32)
     real_image = tf.cast(real_image, tf.float32)
 
@@ -110,8 +111,10 @@ def load_test_image(
 
 def get_train_dataset(input_data_dir: str, buffer_size: int = 400, batch_size: int = 1):
     logging.info("Getting train dataset...")
-    train_dataset = tf.data.Dataset.list_files(input_data_dir + "/real_*")
-    train_dataset.map(load_train_image, num_parallel_calls=tf.data.AUTOTUNE)
+    train_dataset = tf.data.Dataset.list_files(input_data_dir + "/*.png")
+    train_dataset = train_dataset.map(
+        load_train_image, num_parallel_calls=tf.data.AUTOTUNE
+    )
     train_dataset = train_dataset.shuffle(buffer_size)
     train_dataset = train_dataset.batch(batch_size)
     return train_dataset
@@ -119,7 +122,9 @@ def get_train_dataset(input_data_dir: str, buffer_size: int = 400, batch_size: i
 
 def get_test_dataset(input_data_dir: str, batch_size: int = 1):
     logging.info("Getting test dataset...")
-    test_dataset = tf.data.Dataset.list_files(input_data_dir + "/real_*")
-    test_dataset.map(load_test_image, num_parallel_calls=tf.data.AUTOTUNE)
+    test_dataset = tf.data.Dataset.list_files(input_data_dir + "/*.png")
+    test_dataset = test_dataset.map(
+        load_test_image, num_parallel_calls=tf.data.AUTOTUNE
+    )
     test_dataset = test_dataset.batch(batch_size)
     return test_dataset

@@ -79,14 +79,19 @@ def main():
     logging.info("Processing with arguments: %s", str(args))
     logging.info("Getting test data...")
     for test_image, image_name in get_test_data(args.patches_dir, args.rotate_images):
-        cv2.imwrite(
-            os.path.join(args.save_dir, f"input_{image_name}.png"),
-            cv2.bitwise_not(test_image.input_image),
+        input_image = cv2.bitwise_not(test_image.input_image)
+        # expand dims
+        input_image = cv2.cvtColor(input_image, cv2.COLOR_GRAY2BGR)
+        logging.info(
+            "Images sizes - input: %s, real: %s",
+            str(test_image.input_image.shape),
+            str(test_image.image.shape),
         )
+        # concatenate images
+        concatenated_image = cv2.hconcat([input_image, test_image.image])
         # save image
         cv2.imwrite(
-            os.path.join(args.save_dir, f"real_image_{image_name}.png"),
-            test_image.image,
+            os.path.join(args.save_dir, f"{image_name}.png"), concatenated_image
         )
 
 
