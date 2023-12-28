@@ -1,5 +1,7 @@
 import datetime
+import logging
 import os
+import time
 from typing import Tuple
 import tensorflow as tf
 
@@ -56,6 +58,31 @@ class GanModel:
             os.path.join(self._save_image_dir, "test_input_" + image_name),
             test_input[0].numpy(),
         )
+
+    def fit(self, train_ds, test_ds, steps: int = 40000):
+        example_input, example_target = next(iter(test_ds.take(1)))
+        start = time.time()
+
+        for step, (input_image, target) in train_ds.repeat().take(steps).enumerate():
+            if (step + 1) % 1000 == 0:
+                if step != 0:
+                    logging.info(
+                        f"Time taken for 1000 steps: {time.time()-start:.2f} sec\n"
+                    )
+                start = time.time()
+
+                self.generate_images(
+                    example_input, example_target, "image_at_step_" + str(step)
+                )
+
+            self._train_step(input_image, target, step)
+            # Training step
+            if (step + 1) % 100 == 0:
+                logging.info(f"Step: {step+1}")
+
+            # Save (checkpoint) the model every 5k steps
+            if (step + 1) % 5000 == 0:
+                self._checkpoint.save(file_prefix=self._checkpoint_prefix)
 
     @tf.function
     def _train_step(self, input_image: tf.Tensor, target: tf.Tensor, step):
