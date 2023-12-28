@@ -1,9 +1,10 @@
+import datetime
 import os
 from typing import Tuple
 import tensorflow as tf
 
-from gan_network.discriminator import Discriminator
-from gan_network.generator import Generator
+from gan_network.discriminator import Discriminator, discriminator_loss
+from gan_network.generator import Generator, generator_loss
 
 
 class GanModel:
@@ -20,6 +21,9 @@ class GanModel:
         self._discriminator = Discriminator()
         self._log_dir = log_dir
         self._save_image_dir = save_image_dir
+        self._summary_writer = tf.summary.create_file_writer(
+            log_dir + "fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        )
         self._checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
         self._checkpoint = tf.train.Checkpoint(
             generator_optimizer=self._generator_optimizer,
@@ -52,3 +56,38 @@ class GanModel:
             os.path.join(self._save_image_dir, "test_input_" + image_name),
             test_input[0].numpy(),
         )
+
+    @tf.function
+    def _train_step(self, input_image: tf.Tensor, target: tf.Tensor, step):
+        with tf.GradientTape() as gen_tape, tf.GradientTape as disc_tape:
+            gen_output = self._generator(input_image, training=True)
+            disc_real_output = self._discriminator([input_image, target], training=True)
+
+            gen_total_loss, gen_gan_loss, gen_l1_loss = generator_loss(
+                disc_generated_output=disc_real_output,
+                gen_output=gen_output,
+                target=target,
+            )
+            disc_loss = discriminator_loss(
+                disc_real_output=disc_real_output,
+                disc_generated_output=disc_generated_output,
+            )
+        generator_gradients = gen_tape.gradient(
+            gen_total_loss, self._generator.trainable_variables
+        )
+        discriminator_gradients = disc_tape.gradient(
+            disc_loss, self._discriminator.trainable_variables
+        )
+
+        self._generator_optimizer.apply_gradients(
+            zip(generator_gradients, self._generator.trainable_variables)
+        )
+        self._discriminator_optimizer.apply_gradients(
+            zip(discriminator_gradients, self._discriminator.trainable_variables)
+        )
+
+        with self._summary_writer.as_default():
+            tf.summary.scalar("gen_total_loss", gen_total_loss, step=step)
+            tf.summary.scalar("gen_gan_loss", gen_gan_loss, step=step)
+            tf.summary.scalar("gen_l1_loss", gen_l1_loss, step=step)
+            tf.summary.scalar("disc_loss", disc_loss, step=step)
