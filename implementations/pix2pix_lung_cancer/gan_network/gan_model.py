@@ -24,7 +24,7 @@ class GanModel:
         self._log_dir = log_dir
         self._save_image_dir = save_image_dir
         self._summary_writer = tf.summary.create_file_writer(
-            log_dir + "fit/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+            log_dir + "/" + datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         )
         self._checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
         self._checkpoint = tf.train.Checkpoint(
@@ -72,7 +72,7 @@ class GanModel:
                 start = time.time()
 
                 self.generate_images(
-                    example_input, example_target, "image_at_step_" + str(step)
+                    example_input, example_target, "step_" + int(step) + ".png"
                 )
 
             self._train_step(input_image, target, step)
@@ -86,12 +86,16 @@ class GanModel:
 
     @tf.function
     def _train_step(self, input_image: tf.Tensor, target: tf.Tensor, step):
-        with tf.GradientTape() as gen_tape, tf.GradientTape as disc_tape:
+        with tf.GradientTape() as gen_tape, tf.GradientTape() as disc_tape:
             gen_output = self._generator(input_image, training=True)
+
             disc_real_output = self._discriminator([input_image, target], training=True)
+            disc_generated_output = self._discriminator(
+                [input_image, gen_output], training=True
+            )
 
             gen_total_loss, gen_gan_loss, gen_l1_loss = generator_loss(
-                disc_generated_output=disc_real_output,
+                disc_generated_output=disc_generated_output,
                 gen_output=gen_output,
                 target=target,
             )
