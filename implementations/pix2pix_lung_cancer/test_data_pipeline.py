@@ -4,6 +4,7 @@ from typing import List, Tuple
 
 import cv2 as cv
 import numpy as np
+from PIL import Image, ImageOps
 
 from input_image_generator.generator import InputImageGenerator
 
@@ -69,8 +70,22 @@ class TestDataPipeline:
         images = [image]
         rows, cols, _ = image.shape
         if self._rotation_augmentation_degree:
-            for i in range(0, 360, self._rotation_augmentation_degree):
-                M = cv.getRotationMatrix2D((cols / 2, rows / 2), i, 1)
-                rotated = cv.warpAffine(image, M, (cols, rows))
+            for angle in range(0, 360, self._rotation_augmentation_degree):
+                rotated = rotate(image, angle)
                 images.append(rotated)
         return images
+
+
+def rotate(image: np.ndarray, angle: int) -> np.ndarray:
+    """
+    Rotates an image by a certain degree.
+    :param image: the image
+    :param angle: the angle
+    :return: the rotated image
+    """
+    pil_image = Image.fromarray(image)
+    rotated_image = pil_image.rotate(angle, expand=True)
+    # get rid of black borders
+
+    rotated_image = ImageOps.crop(rotated_image, border=1)
+    return np.array(rotated_image)

@@ -16,9 +16,13 @@ class GanModel:
         save_image_dir: str,
         log_dir: str = "logs/",
         input_size: Tuple[int, int] = (256, 256),
+        load_checkpoint: bool = False,
     ):
-        self._generator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
-        self._discriminator_optimizer = tf.keras.optimizers.Adam(2e-4, beta_1=0.5)
+        # Using legacy Adam optimizer since running on mac M1
+        self._generator_optimizer = tf.keras.optimizers.legacy.Adam(2e-4, beta_1=0.5)
+        self._discriminator_optimizer = tf.keras.optimizers.legacy.Adam(
+            2e-4, beta_1=0.5
+        )
         self._generator = Generator()
         self._discriminator = Discriminator()
         self._log_dir = log_dir
@@ -30,7 +34,23 @@ class GanModel:
         self._checkpoint = tf.train.Checkpoint(
             generator_optimizer=self._generator_optimizer,
             discriminator_optimizer=self._discriminator_optimizer,
+            generator=self._generator,
+            discriminator=self._discriminator,
         )
+        self._generator.build((None, *input_size, 3))
+        self._discriminator.build((None, *input_size, 3))
+        if load_checkpoint:
+            logging.info("Loading checkpoint...: %s", checkpoint_dir)
+            self._checkpoint.restore(tf.train.latest_checkpoint(checkpoint_dir))
+            # load models from checkpoint
+            self._generator = self._checkpoint.generator
+            self._discriminator = self._checkpoint.discriminator
+            # load optimizers from checkpoint
+            self._generator_optimizer = self._checkpoint.generator_optimizer
+            self._discriminator_optimizer = self._checkpoint.discriminator_optimizer
+            # load weights from checkpoint
+            # self._generator.load_weights(load_checkpoint_file)
+            # self._discriminator.load_weights(load_checkpoint_file)
 
     def generate_images(
         self,
@@ -72,7 +92,7 @@ class GanModel:
                 start = time.time()
 
                 self.generate_images(
-                    example_input, example_target, "step_" + int(step) + ".png"
+                    example_input, example_target, "step_" + str(step + 1) + ".png"
                 )
 
             self._train_step(input_image, target, step)

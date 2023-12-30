@@ -1,11 +1,14 @@
 MAIN_FOLDER = pix2pix_lung_cancer
 DATA_FOLDER = ./data
 PATCHES_FOLDER = ${DATA_FOLDER}/LUNA_patches
-INPUT_DATA_FOLDER = ${DATA_FOLDER}/saved_input_data
-INPUT_DATA_FOLDER_TEST = ${DATA_FOLDER}/saved_input_data_test
-CHECKPOINT_FOLDER = ${DATA_FOLDER}/checkpoints
-LOGS_FOLDER = ${DATA_FOLDER}/logs
-GENERATED_IMAGES_FOLDER = ${DATA_FOLDER}/generated_images
+INPUT_DATA_FOLDER = ${DATA_FOLDER}/saved_input_data_2
+INPUT_DATA_FOLDER_TEST = ${DATA_FOLDER}/saved_input_data_test_2
+CHECKPOINT_FOLDER = ${DATA_FOLDER}/checkpoints_2
+LOGS_FOLDER = ${DATA_FOLDER}/logs_2
+GENERATED_IMAGES_FOLDER = ${DATA_FOLDER}/generated_images_2
+
+# Training parameters:
+T_STEPS=200000
 
 # Data prep steps:
 # 1. Extract
@@ -26,6 +29,7 @@ data/generate:
 	@echo "Generating data..."
 	cd ./${MAIN_FOLDER} && python ./generate_test_data_main.py \
 		--patches_dir $(PATCHES_FOLDER) \
+		--rotate_images 90 \
 		--save_dir $(INPUT_DATA_FOLDER)
 
 # Training
@@ -38,5 +42,5 @@ train:
 		--log_dir $(LOGS_FOLDER) \
 		--checkpoint_dir $(CHECKPOINT_FOLDER) \
 		--generated_images_dir $(GENERATED_IMAGES_FOLDER) \
-		--steps 40000 
+		--steps $(T_STEPS) 
 
