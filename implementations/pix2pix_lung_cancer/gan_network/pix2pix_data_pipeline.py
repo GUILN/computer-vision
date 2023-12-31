@@ -128,3 +128,27 @@ def get_test_dataset(input_data_dir: str, batch_size: int = 1):
     )
     test_dataset = test_dataset.batch(batch_size)
     return test_dataset
+
+
+def load_fid_inception_image(image_file: str) -> tf.Tensor:
+    logging.debug("Loading images...")
+    image = tf.io.read_file(image_file)
+    image = tf.image.decode_png(image)
+
+    # convert to float32
+    image = tf.cast(image, tf.float32)
+    # normalize to [-1, 1]
+    image = (image / 127.5) - 1
+    return image
+
+
+def get_fid_inception_dataset(
+    input_data_dir: str, prefix: str = "prediction", batch_size: int = 1
+):
+    logging.info("Getting FID inception dataset...")
+    test_dataset = tf.data.Dataset.list_files(input_data_dir + f"/*{prefix}*.png")
+    test_dataset = test_dataset.map(
+        load_fid_inception_image, num_parallel_calls=tf.data.AUTOTUNE
+    )
+    test_dataset = test_dataset.batch(batch_size)
+    return test_dataset
