@@ -37,7 +37,7 @@ class StyleContentModel(tf.keras.models.Model):
         outputs = self.u_net(preprocessed_input)
         style_outputs, content_outputs = (
             outputs[: self.num_style_layers],
-            outputs[self.num_style_layers:],
+            outputs[self.num_style_layers :],
         )
         style_outputs = [gram_matrix(style_output) for style_output in style_outputs]
         content_dict = {
