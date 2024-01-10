@@ -134,6 +134,12 @@ def load_fid_inception_image(image_file: str) -> tf.Tensor:
     logging.debug("Loading images...")
     image = tf.io.read_file(image_file)
     image = tf.image.decode_png(image)
+    logging.debug("resizing image to double size...")
+    # image = tf.image.resize(
+    #     image,
+    #     (1024, 1024),
+    #     method=tf.image.ResizeMethod.NEAREST_NEIGHBOR,
+    # )
 
     # convert to float32
     image = tf.cast(image, tf.float32)

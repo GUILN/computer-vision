@@ -6,6 +6,8 @@ INPUT_DATA_FOLDER_TEST = ${DATA_FOLDER}/saved_input_data_test_2
 CHECKPOINT_FOLDER = ${DATA_FOLDER}/checkpoints_2
 LOGS_FOLDER = ${DATA_FOLDER}/logs_2
 GENERATED_IMAGES_FOLDER = ${DATA_FOLDER}/generated_images_2
+TEST_RESULT_TARGET_FOLDER = ${DATA_FOLDER}/test_target
+TEST_RESULT_PREDICTED_FOLDER = ${DATA_FOLDER}/test_predicted
 
 # Training parameters:
 T_STEPS=200000
@@ -44,3 +46,7 @@ train:
 		--generated_images_dir $(GENERATED_IMAGES_FOLDER) \
 		--steps $(T_STEPS) 
 
+# Testing
+test/fid:
+	cd ./$(MAIN_FOLDER) && \
+	python -m pytorch_fid $(TEST_RESULT_TARGET_FOLDER) $(TEST_RESULT_PREDICTED_FOLDER) \
