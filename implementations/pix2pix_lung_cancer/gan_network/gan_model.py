@@ -3,6 +3,7 @@ import logging
 import os
 import time
 from typing import Tuple
+import numpy as np
 import tensorflow as tf
 
 from gan_network.discriminator import Discriminator, discriminator_loss
@@ -77,6 +78,14 @@ class GanModel:
         tf.keras.preprocessing.image.save_img(
             os.path.join(self._save_image_dir, "test_input_" + image_name),
             test_input[0].numpy(),
+        )
+
+    def generate_image(self, test_input: tf.Tensor, image_name: str) -> None:
+        prediction = self._generator(test_input, training=True)
+        logging.info("saving image to file: %s", image_name)
+        tf.keras.preprocessing.image.save_img(
+            image_name,
+            prediction[0].numpy(),
         )
 
     def fit(self, train_ds, test_ds, steps: int = 40000):
